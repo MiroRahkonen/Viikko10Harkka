@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/file.h>
+#include <time.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[]){
+    pid_t pid;
+    time_t t;
+    
+    sleep(3);
+    pid = getpid();
+
+    int fd = open(argv[1], O_RDWR);
+    if(fd == -1) {
+        printf("Unable to open the file\n");
+        exit(1);
+    }
+
+    /*Exclusive lock*/
+    time(&t);
+    printf("pid: %3d, getting exclusive lock at %s\n", pid, ctime(&t));
+    flock(fd, LOCK_EX);
+    time(&t);
+    printf("pid: %4d, exclusive locked at %s\n", pid, ctime(&t));
+    sleep(10);
+
+
+    flock(fd, LOCK_UN);
+    time(&t);
+    printf("pid: %4d, exclusive lock unlocked at %s\n", pid, ctime(&t));  
+
+    /*Shared lock*/
+    time(&t);
+    printf("pid: %3d, getting shared lock at %s\n", pid, ctime(&t));
+    flock(fd, LOCK_SH);
+    time(&t);
+    printf("pid: %4d, shared lock at %s\n", pid, ctime(&t));
+    sleep(10);
+
+    flock(fd, LOCK_UN);
+    time(&t);
+    printf("pid: %4d, shared lock unlocked at %s\n", pid, ctime(&t));
+    printf("Exiting\n");
+    close(fd);
+    return 0;
+}

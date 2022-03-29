@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+
+int main(int argc, char *argv[]){
+    char str[20];
+
+    if(argc == 3){
+        sprintf(str,"%s %s",argv[1],argv[2]);
+        system(str);
+        fprintf(stdout,"After system()\n");
+        
+        char *args[] = {argv[1],argv[2],NULL};
+        execvp("ls", args);
+        fprintf(stdout,"After execvp()\n");
+    }
+
+    else if(argc == 4){
+        sprintf(str,"%s %s %s",argv[1],argv[2],argv[3]);
+        system(str);
+        fprintf(stdout,"After system()\n");
+
+        char *args[] = {argv[1],argv[2],argv[3],NULL};
+        execvp("ls", args);
+        fprintf(stdout,"After exec()\n");
+    }
+
+    return 0;
+}
